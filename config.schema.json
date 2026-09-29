@@ -1,0 +1,69 @@
+{
+  "pluginAlias": "CameraPlatform",
+  "pluginType": "platform",
+  "singular": true,
+  "headerDisplay": "RTSP cameras in HomeKit. Credentials go in their own fields, never in the URL, so they stay out of your logs.",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "ffmpegPath": {
+        "title": "ffmpeg path",
+        "type": "string",
+        "description": "Only needed when the bundled binary and PATH are both wrong."
+      },
+      "debug": {
+        "title": "Log ffmpeg commands",
+        "type": "boolean",
+        "default": false,
+        "description": "Logs the full command line, with credentials still redacted."
+      },
+      "cameras": {
+        "title": "Cameras",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": { "title": "Name", "type": "string", "required": true },
+            "url": {
+              "title": "RTSP URL",
+              "type": "string",
+              "required": true,
+              "description": "rtsp://host:554/path — without credentials."
+            },
+            "username": { "title": "Username", "type": "string" },
+            "password": { "title": "Password", "type": "string", "x-schema-form": { "type": "password" } },
+            "snapshotUrl": {
+              "title": "Snapshot URL",
+              "type": "string",
+              "description": "Optional lower-resolution substream, used for stills."
+            },
+            "transport": {
+              "title": "Transport",
+              "type": "string",
+              "default": "tcp",
+              "oneOf": [
+                { "title": "TCP (recommended)", "enum": ["tcp"] },
+                { "title": "UDP", "enum": ["udp"] }
+              ]
+            },
+            "manufacturer": { "title": "Manufacturer", "type": "string" },
+            "model": { "title": "Model", "type": "string" },
+            "maxWidth": { "title": "Max width", "type": "integer", "default": 1920 },
+            "maxHeight": { "title": "Max height", "type": "integer", "default": 1080 },
+            "maxFps": { "title": "Max FPS", "type": "integer", "default": 15 },
+            "maxBitrateKbps": { "title": "Max bitrate (kbps)", "type": "integer", "default": 2000 },
+            "maxStreams": { "title": "Concurrent viewers", "type": "integer", "default": 2 },
+            "transcode": {
+              "title": "Re-encode",
+              "type": "boolean",
+              "default": false,
+              "description": "Leave off unless the camera emits a profile HomeKit refuses. Re-encoding is expensive."
+            },
+            "snapshotCacheSeconds": { "title": "Snapshot cache (seconds)", "type": "number", "default": 10 },
+            "snapshotTimeoutMs": { "title": "Snapshot timeout (ms)", "type": "integer", "default": 10000 }
+          }
+        }
+      }
+    }
+  }
+}

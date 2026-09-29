@@ -1,0 +1,61 @@
+name: Release
+
+# semantic-release decides the version from the commit history, publishes to
+# npm and cuts the GitHub release.
+#
+# Mirrors @nubisco/openbridge-tuya-local-platform, which is the proven shape
+# for these packages. The pieces that look incidental are not: see the notes
+# on the pinned npm and the environment below.
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  release:
+    name: Semantic Release
+    runs-on: ubuntu-latest
+    # Required, not cosmetic. The trusted publisher on npmjs.com is bound to
+    # this environment, and an OIDC token minted by a job without it is
+    # rejected, which surfaces confusingly as EINVALIDNPMTOKEN.
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_TOKEN }}
+          persist-credentials: true
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      # Trusted publishing (OIDC) requires npm >= 11.5.1, and the npm bundled
+      # with Node 22 is older. PINNED, not @latest: on 2026-07-10 `npm@latest`
+      # briefly resolved to npm@13.1.5, whose provenance code crashes with
+      # "Cannot find module 'sigstore'". Bump deliberately.
+      - name: Install pinned npm for trusted publishing
+        run: npm install -g npm@11.5.1
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Disable git hooks in CI
+        run: git config core.hooksPath /dev/null
+
+      # No NPM_TOKEN. Publishing authenticates via OIDC against the trusted
+      # publisher configured for this package on npmjs.com. Provenance is
+      # generated automatically under trusted publishing, so it is not set here.
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npx semantic-release

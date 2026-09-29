@@ -1,0 +1,104 @@
+{
+  "name": "@nubisco/openbridge-camera-platform",
+  "version": "0.1.0",
+  "description": "RTSP cameras in HomeKit through OpenBridge, with structured config and no credentials in your logs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "config.schema.json",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "license": "MIT",
+  "author": "Jos\u00e9 Silva <jose@nubisco.io>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nubisco/openbridge-camera-platform.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nubisco/openbridge-camera-platform/issues"
+  },
+  "homepage": "https://docs.nubisco.io/openbridge-camera-platform/",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/joseporto"
+  },
+  "keywords": [
+    "openbridge-plugin",
+    "camera",
+    "rtsp",
+    "ffmpeg",
+    "homekit",
+    "local"
+  ],
+  "openbridge": {
+    "platform": "CameraPlatform",
+    "displayName": "Camera Platform"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean",
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint src/ tests/",
+    "types:check": "tsc --noEmit",
+    "format:check": "prettier --check .",
+    "quality:check": "npm test && npm run lint && npm run format:check && npm run types:check",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "peerDependencies": {
+    "hap-nodejs": ">=0.12.0"
+  },
+  "dependencies": {
+    "zod": "^3.25.76"
+  },
+  "optionalDependencies": {
+    "ffmpeg-for-homebridge": "^2.1.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@semantic-release/changelog": "^7.0.0",
+    "@semantic-release/git": "^11.0.1",
+    "@types/node": "^22.0.0",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.9",
+    "semantic-release": "^25.0.9",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.71.0",
+    "vitepress": "^1.6.4",
+    "vitest": "^3.0.0"
+  },
+  "release": {
+    "branches": [
+      "master"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/github",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "package.json",
+            "CHANGELOG.md"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]"
+        }
+      ]
+    ]
+  }
+}
