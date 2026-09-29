@@ -50,9 +50,14 @@ function buildCamera(
 ) {
   const { Accessory, Service, Characteristic, uuid, Categories } = hap
 
-  // From the name, so renaming a camera in config renames it in HomeKit on the
-  // next restart rather than leaving a name nobody chose.
-  const accessory = new Accessory(camera.name, uuid.generate(`camera:${camera.name}`))
+  // Generated from the bare name, matching what homebridge-camera-ffmpeg does.
+  // HomeKit identifies an accessory by its UUID, so keeping it identical means
+  // replacing that plugin with this one preserves each camera's room and any
+  // automations built on it. Verified against a live install: the three cached
+  // accessories there have exactly these UUIDs. Prefixing the name, which is
+  // what this did first, would have presented three brand new cameras and
+  // silently discarded all of it.
+  const accessory = new Accessory(camera.name, uuid.generate(camera.name))
   accessory.category = Categories.CAMERA
 
   accessory
