@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { CameraMonitor } from './CameraMonitor.js'
 import { parseConfig } from './config.js'
 import { resolveFfmpeg } from './ffmpeg/resolve.js'
 import { FfmpegSnapshotRunner, SnapshotCache } from './SnapshotCache.js'
@@ -38,7 +39,7 @@ function definePlugin<T extends { manifest: { name: string; version: string } }>
   return plugin
 }
 
-const state: { delegates: StreamingDelegate[] } = { delegates: [] }
+const state: { delegates: StreamingDelegate[]; monitors: CameraMonitor[] } = { delegates: [], monitors: [] }
 
 function buildCamera(
   hap: any,
@@ -148,19 +149,34 @@ const plugin = definePlugin({
 
       // Registered as a device too, so a camera appears in OpenBridge's own
       // list rather than only inside HomeKit.
+      const deviceId = `camera-${camera.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
       ctx.registerDevice({
-        id: `camera-${camera.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+        id: deviceId,
         name: camera.name,
         widgetType: 'camera',
         manufacturer: camera.manufacturer ?? 'Nubisco',
         model: camera.model ?? 'RTSP Camera',
       })
+
+      // Without this the camera reports nothing, so OpenBridge draws it with
+      // the grey "never reported" dot forever and a camera unplugged a week ago
+      // looks exactly like one that is fine.
+      const monitor = new CameraMonitor(camera)
+      state.monitors.push(monitor)
+      monitor.on('telemetry', (t) => ctx.reportTelemetry(deviceId, { ...t }))
+      delegate.onStreamCountChange = (n) => monitor.setActiveStreams(n)
+      monitor.start(config.reachabilityIntervalSeconds)
     }
 
     ctx.log.info(`Started with ${config.cameras.length} camera(s), ffmpeg at ${ffmpeg.path}`)
   },
 
   async stop(ctx: PluginContext) {
+    for (const monitor of state.monitors) {
+      monitor.stop()
+      monitor.removeAllListeners()
+    }
+    state.monitors = []
     for (const delegate of state.delegates) delegate.stopAll()
     state.delegates = []
     ctx.log.info('Stopped')
@@ -177,4 +193,5 @@ export * from './ffmpeg/args.js'
 export * from './ffmpeg/resolve.js'
 export * from './resolutions.js'
 export { SnapshotCache, FfmpegSnapshotRunner } from './SnapshotCache.js'
+export { CameraMonitor, parseTarget } from './CameraMonitor.js'
 export { StreamingDelegate, reserveUdpPort } from './StreamingDelegate.js'

@@ -32,6 +32,8 @@ interface SessionRecord {
 export class StreamingDelegate {
   private sessions = new Map<string, SessionRecord>()
   controller: any
+  /** Set by the platform so the device view can show live viewer count. */
+  onStreamCountChange?: (count: number) => void
 
   constructor(
     private readonly hap: any,
@@ -178,6 +180,8 @@ export class StreamingDelegate {
       done()
     })
 
+    this.onStreamCountChange?.(this.sessions.size)
+
     // ffmpeg does not announce readiness, and waiting for first output would
     // delay the HomeKit tile. Answering now is what the protocol expects.
     done()
@@ -192,6 +196,7 @@ export class StreamingDelegate {
       /* already gone */
     }
     this.sessions.delete(sessionID)
+    this.onStreamCountChange?.(this.sessions.size)
   }
 
   /** Kills every stream, for plugin shutdown. */

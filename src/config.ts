@@ -57,6 +57,9 @@ export const PlatformSchema = z.object({
   cameras: z.array(CameraSchema).default([]),
   ffmpegPath: z.string().optional(),
   debug: z.boolean().default(false),
+  // A bare TCP connect per camera, so a minute is cheap and keeps the device
+  // list honest without opening a stream just to ask whether it is there.
+  reachabilityIntervalSeconds: z.number().positive().default(60),
 })
 
 export type ParsedPlatformConfig = z.infer<typeof PlatformSchema>
