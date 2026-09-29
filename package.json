@@ -1,6 +1,6 @@
 {
   "name": "@nubisco/openbridge-camera-platform",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "RTSP cameras in HomeKit through OpenBridge, with structured config and no credentials in your logs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,7 @@
     "node": ">=20.0.0"
   },
   "license": "MIT",
-  "author": "Jos\u00e9 Silva <jose@nubisco.io>",
+  "author": "José Silva <jose@nubisco.io>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nubisco/openbridge-camera-platform.git"
