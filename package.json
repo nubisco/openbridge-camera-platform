@@ -1,6 +1,6 @@
 {
   "name": "@nubisco/openbridge-camera-platform",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "RTSP cameras in HomeKit through OpenBridge, with structured config and no credentials in your logs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

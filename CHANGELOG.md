@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/nubisco/openbridge-camera-platform/compare/v1.0.0...v1.1.0) (2026-09-29)
+
+
+### Features
+
+* report camera reachability, so the device stops showing as never-reported ([d560782](https://github.com/nubisco/openbridge-camera-platform/commit/d560782bc2c21a41f853628a620294e572d72c79))
+
 # 1.0.0 (2026-09-29)
 
 
