@@ -10,7 +10,7 @@
     "README.md"
   ],
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.23.4"
   },
   "license": "MIT",
   "author": "José Silva <jose@nubisco.io>",

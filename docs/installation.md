@@ -14,7 +14,7 @@ npm install -g @nubisco/openbridge-camera-platform
 ## Requirements
 
 - OpenBridge, any version supporting native platform plugins
-- Node 20 or newer
+- Node 22.23.4 or newer
 - **ffmpeg**, see below
 - Cameras reachable from the bridge host over RTSP, usually TCP port 554
 
