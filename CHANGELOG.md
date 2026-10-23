@@ -1,3 +1,19 @@
+# [2.0.0](https://github.com/nubisco/openbridge-camera-platform/compare/v1.1.0...v2.0.0) (2026-10-23)
+
+
+* feat!: require Node.js 22.23.4 or newer ([a534f9f](https://github.com/nubisco/openbridge-camera-platform/commit/a534f9fa01681ec9f6a7291a3fd32df65d30a38a))
+
+
+### BREAKING CHANGES
+
+* Node.js 20 is no longer supported. Node 20 reached end of
+life in April 2026 and gets no security fixes, so it stays exposed to the
+October 2026 Node.js security release (the Brotli remote code execution
+CVE-2026-111497 and the TLS hostname verification bypasses). Node 22
+releases before 22.23.4 are affected by the same release. Run OpenBridge on
+Node.js 22.23.4 or newer, or any Node 24 release, before updating this
+plugin.
+
 # [1.1.0](https://github.com/nubisco/openbridge-camera-platform/compare/v1.0.0...v1.1.0) (2026-09-29)
 
 
