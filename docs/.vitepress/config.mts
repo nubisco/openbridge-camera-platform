@@ -50,6 +50,9 @@ export default defineConfig({
   description: 'RTSP cameras in Apple HomeKit through OpenBridge, with structured configuration.',
 
   base: '/openbridge-camera-platform/',
+  // One address per page: /page, never also /page.html. Links, search and
+  // the sitemap use the clean form, and the gateway 301s the .html one.
+  cleanUrls: true,
 
   head: [
     ['link', { rel: 'icon', href: '/openbridge-camera-platform/favicon.ico' }],
