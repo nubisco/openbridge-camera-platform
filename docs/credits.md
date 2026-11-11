@@ -1,4 +1,7 @@
-# Credits
+---
+layout: nubisco
+title: 'Credits'
+---
 
 **[homebridge-camera-ffmpeg](https://github.com/homebridge-plugins/homebridge-camera-ffmpeg)**
 by Sunoo and its contributors. It has worked reliably for years, and it is the

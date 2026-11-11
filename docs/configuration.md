@@ -1,4 +1,7 @@
-# Configuration
+---
+layout: nubisco
+title: 'Configuration'
+---
 
 ```json
 {

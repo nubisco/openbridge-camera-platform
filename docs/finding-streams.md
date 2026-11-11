@@ -1,7 +1,8 @@
-# Finding your stream URL
-
-Every camera needs an `rtsp://` URL. Cameras rarely document theirs clearly, so
-this is usually the fiddly part.
+---
+layout: nubisco
+title: 'Finding your stream URL'
+intro: 'Every camera needs an `rtsp://` URL. Cameras rarely document theirs clearly, so this is usually the fiddly part.'
+---
 
 ## Common paths
 

@@ -1,4 +1,7 @@
-# How it works
+---
+layout: nubisco
+title: 'How it works'
+---
 
 ## Streaming
 

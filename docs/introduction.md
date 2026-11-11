@@ -1,8 +1,8 @@
-# Introduction
-
-This plugin publishes RTSP cameras to Apple HomeKit through
-[OpenBridge](https://github.com/nubisco/openbridge), using ffmpeg to move the
-video. Everything stays on your network.
+---
+layout: nubisco
+title: 'Introduction'
+intro: 'This plugin publishes RTSP cameras to Apple HomeKit through [OpenBridge](https://github.com/nubisco/openbridge), using ffmpeg to move the video. Everything stays on your network.'
+---
 
 ## Why another camera plugin
 

@@ -1,4 +1,7 @@
-# Contributing
+---
+layout: nubisco
+title: 'Contributing'
+---
 
 ```sh
 git clone https://github.com/nubisco/openbridge-camera-platform
