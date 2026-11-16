@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/nubisco/openbridge-camera-platform/compare/v2.0.0...v2.1.0) (2026-11-16)
+
+
+### Features
+
+* live view in OpenBridge itself ([#3](https://github.com/nubisco/openbridge-camera-platform/issues/3)) ([cc20913](https://github.com/nubisco/openbridge-camera-platform/commit/cc20913ac4208c8fbc41f846f92fd7231bea5e18))
+
 # [2.0.0](https://github.com/nubisco/openbridge-camera-platform/compare/v1.1.0...v2.0.0) (2026-10-23)
 
 
