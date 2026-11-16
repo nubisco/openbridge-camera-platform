@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { spawn } from 'node:child_process'
 import { CameraMonitor } from './CameraMonitor.js'
+import { LIVE_BOUNDARY, describeCommand, liveArgs, redact, snapshotArgs } from './ffmpeg/args.js'
 import { parseConfig } from './config.js'
 import { resolveFfmpeg } from './ffmpeg/resolve.js'
 import { FfmpegSnapshotRunner, SnapshotCache } from './SnapshotCache.js'
@@ -33,6 +35,14 @@ interface PluginContext {
   registerDevice(device: { id: string; name: string; widgetType: string; manufacturer?: string; model?: string }): void
   registerControl(deviceId: string, controlId: string, handler: (value: unknown) => void | Promise<void>): void
   getHapBridge?(): { hap: any; bridge: any } | undefined
+  /** OpenBridge 1.15 and later: video for OpenBridge's own UI. */
+  registerVideo?(
+    deviceId: string,
+    source: {
+      snapshot(): Promise<Buffer>
+      live?(signal: AbortSignal): { stream: NodeJS.ReadableStream; boundary: string }
+    },
+  ): void
 }
 
 function definePlugin<T extends { manifest: { name: string; version: string } }>(plugin: T): T {
@@ -156,6 +166,29 @@ const plugin = definePlugin({
         widgetType: 'camera',
         manufacturer: camera.manufacturer ?? 'Nubisco',
         model: camera.model ?? 'RTSP Camera',
+      })
+
+      // The picture in OpenBridge itself: the snapshot HomeKit uses, and a
+      // live view made only while someone has the camera open.
+      ctx.registerVideo?.(deviceId, {
+        snapshot: () =>
+          snapshots.get(camera.name, snapshotArgs(camera), camera.snapshotCacheSeconds, camera.snapshotTimeoutMs),
+        live: (signal) => {
+          const args = liveArgs(camera)
+          if (config.debug) ctx.log.debug(`live view: ${describeCommand(ffmpeg.path, args)}`)
+          const child = spawn(ffmpeg.path, args, { stdio: ['ignore', 'pipe', 'pipe'] })
+          let errors = ''
+          child.stderr.on('data', (b: Buffer) => (errors = (errors + b.toString()).slice(-500)))
+          child.on('exit', (code) => {
+            if (code && !signal.aborted) ctx.log.warn(`${camera.name}: live view stopped: ${redact(errors.trim())}`)
+          })
+          const stop = () => {
+            if (child.exitCode === null) child.kill('SIGTERM')
+          }
+          signal.addEventListener('abort', stop, { once: true })
+          if (signal.aborted) stop()
+          return { stream: child.stdout, boundary: LIVE_BOUNDARY }
+        },
       })
 
       // Without this the camera reports nothing, so OpenBridge draws it with
