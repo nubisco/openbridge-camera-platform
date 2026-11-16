@@ -69,6 +69,43 @@ export function snapshotArgs(camera: CameraConfig, options: SnapshotArgsOptions 
   return args
 }
 
+/** The multipart boundary the live view's Motion JPEG uses. */
+export const LIVE_BOUNDARY = 'ffmpeg'
+
+/**
+ * ffmpeg arguments for OpenBridge's own live view: Motion JPEG on stdout, a
+ * picture a browser shows as it arrives with no player. Capped at 960 px and
+ * six frames a second, because it runs on the bridge (often a Raspberry Pi)
+ * and only while someone has the camera open.
+ */
+export function liveArgs(camera: CameraConfig, options: { width?: number; fps?: number } = {}): string[] {
+  const width = Math.min(options.width ?? 960, camera.maxWidth)
+  const fps = options.fps ?? 6
+  return [
+    '-hide_banner',
+    '-loglevel',
+    'error',
+    '-rtsp_transport',
+    camera.transport,
+    '-analyzeduration',
+    '1000000',
+    '-probesize',
+    '1000000',
+    '-i',
+    authenticatedUrl(camera),
+    '-an',
+    '-vf',
+    `fps=${fps},scale='min(${width},iw)':-2`,
+    '-q:v',
+    '7',
+    '-f',
+    'mpjpeg',
+    '-boundary_tag',
+    LIVE_BOUNDARY,
+    'pipe:1',
+  ]
+}
+
 export interface StreamArgsOptions {
   width: number
   height: number

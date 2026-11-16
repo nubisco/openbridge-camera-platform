@@ -1,5 +1,13 @@
 import { describe, it, expect } from 'vitest'
-import { authenticatedUrl, redact, snapshotArgs, streamArgs, describeCommand } from '../src/ffmpeg/args.js'
+import {
+  authenticatedUrl,
+  describeCommand,
+  LIVE_BOUNDARY,
+  liveArgs,
+  redact,
+  snapshotArgs,
+  streamArgs,
+} from '../src/ffmpeg/args.js'
 import type { CameraConfig } from '../src/types.js'
 
 const CAMERA: CameraConfig = {
@@ -130,3 +138,23 @@ function baseStreamOptions() {
     videoMtu: 1316,
   }
 }
+
+describe('liveArgs', () => {
+  it('streams Motion JPEG on stdout, small and slow enough for the bridge', () => {
+    const args = liveArgs(CAMERA)
+    expect(args.slice(-5)).toEqual(['-f', 'mpjpeg', '-boundary_tag', LIVE_BOUNDARY, 'pipe:1'])
+    expect(args).toContain('mpjpeg')
+    expect(args[args.indexOf('-boundary_tag') + 1]).toBe(LIVE_BOUNDARY)
+    expect(args[args.length - 1]).toBe('pipe:1')
+    expect(args[args.indexOf('-vf') + 1]).toBe("fps=6,scale='min(960,iw)':-2")
+    expect(args).toContain('-an')
+  })
+
+  it('never upscales past what the camera allows, and keeps its transport and credentials', () => {
+    const small = liveArgs({ ...CAMERA, maxWidth: 640, transport: 'udp' })
+    expect(small[small.indexOf('-vf') + 1]).toBe("fps=6,scale='min(640,iw)':-2")
+    expect(small[small.indexOf('-rtsp_transport') + 1]).toBe('udp')
+    expect(small[small.indexOf('-i') + 1]).toContain('nubiscoCamera1:')
+    expect(redact(describeCommand('ffmpeg', small))).not.toContain('sup3r-s3cret')
+  })
+})
