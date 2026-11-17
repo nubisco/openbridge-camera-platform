@@ -105,7 +105,7 @@ const plugin = definePlugin({
     name: PLUGIN_NAME,
     version: PLUGIN_VERSION,
     description: 'RTSP cameras in HomeKit, with structured configuration and no credentials in logs',
-    author: 'José Silva',
+    author: 'Nubisco',
   },
 
   async setup(ctx: PluginContext) {
