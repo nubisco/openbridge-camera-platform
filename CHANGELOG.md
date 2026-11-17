@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/nubisco/openbridge-camera-platform/compare/v2.1.0...v2.1.1) (2026-11-17)
+
+
+### Bug Fixes
+
+* the package says it is by Nubisco, like the plugin card ([#5](https://github.com/nubisco/openbridge-camera-platform/issues/5)) ([335c050](https://github.com/nubisco/openbridge-camera-platform/commit/335c050c51b4cb165ce977ba142d37906ce26918))
+
 # [2.1.0](https://github.com/nubisco/openbridge-camera-platform/compare/v2.0.0...v2.1.0) (2026-11-16)
 
 
